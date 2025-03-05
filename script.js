@@ -1,5 +1,177 @@
 // Early 2000s Website JavaScript
 
+// Function to initialize audio with autoplay
+function initAudio() {
+    // Define playlist of songs
+    const playlist = [
+        { src: 'images/birthday-bear1.mp3', title: 'Birthday Bear' },
+        { src: 'images/birthday-bear-edm.mp3', title: 'Birthday Bear EDM' },
+        { src: 'images/birthday-bear-canjun.mp3', title: 'Birthday Bear Cajun' }
+    ];
+    
+    let currentSongIndex = 0;
+    
+    // Create audio element programmatically
+    const audioElement = document.createElement('audio');
+    audioElement.id = 'bgMusic';
+    audioElement.loop = false; // Set to false since we'll handle looping manually
+    
+    const sourceElement = document.createElement('source');
+    sourceElement.src = playlist[currentSongIndex].src;
+    sourceElement.type = 'audio/mp3';
+    
+    audioElement.appendChild(sourceElement);
+    document.body.insertBefore(audioElement, document.body.firstChild);
+    
+    // Create music controls
+    const musicControls = document.createElement('div');
+    musicControls.className = 'music-controls';
+    
+    // Create song title display
+    const songTitle = document.createElement('div');
+    songTitle.className = 'song-title';
+    songTitle.textContent = playlist[currentSongIndex].title;
+    musicControls.appendChild(songTitle);
+    
+    // Create control buttons container
+    const controlButtons = document.createElement('div');
+    controlButtons.className = 'control-buttons';
+    
+    // Previous song button
+    const prevButton = document.createElement('button');
+    prevButton.id = 'prevSong';
+    prevButton.className = 'music-button';
+    prevButton.innerHTML = '⏮️';
+    prevButton.title = 'Previous Song';
+    controlButtons.appendChild(prevButton);
+    
+    // Play/Pause button
+    const toggleButton = document.createElement('button');
+    toggleButton.id = 'toggleMusic';
+    toggleButton.className = 'music-button';
+    toggleButton.innerHTML = '🔊';
+    toggleButton.title = 'Play/Pause';
+    controlButtons.appendChild(toggleButton);
+    
+    // Next song button
+    const nextButton = document.createElement('button');
+    nextButton.id = 'nextSong';
+    nextButton.className = 'music-button';
+    nextButton.innerHTML = '⏭️';
+    nextButton.title = 'Next Song';
+    controlButtons.appendChild(nextButton);
+    
+    musicControls.appendChild(controlButtons);
+    document.body.insertBefore(musicControls, document.body.firstChild);
+    
+    // Get references to the audio element and buttons
+    const bgMusic = document.getElementById('bgMusic');
+    const toggleMusic = document.getElementById('toggleMusic');
+    const prevSong = document.getElementById('prevSong');
+    const nextSong = document.getElementById('nextSong');
+    
+    // Update the marquee text with current song
+    function updateMarqueeWithSong() {
+        const songName = playlist[currentSongIndex].title;
+        const marqueeContent = document.querySelector('.marquee-content');
+        
+        // Check if we already have a song span
+        let songSpan = document.getElementById('current-song-span');
+        if (!songSpan) {
+            // Create a new span for the song
+            songSpan = document.createElement('span');
+            songSpan.id = 'current-song-span';
+            marqueeContent.appendChild(songSpan);
+        }
+        
+        // Update the song span text
+        songSpan.textContent = `Now Playing: ${songName}`;
+        
+        // Update the song title in controls
+        songTitle.textContent = songName;
+    }
+    
+    // Function to change song
+    function changeSong(direction) {
+        if (direction === 'next') {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+        } else {
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+        }
+        
+        // Update source and reload
+        bgMusic.src = playlist[currentSongIndex].src;
+        
+        // Update song title in marquee
+        updateMarqueeWithSong();
+        
+        // Play the new song
+        bgMusic.play().catch(error => {
+            console.log('Autoplay prevented by browser:', error);
+        });
+    }
+    
+    // Function to play music with user interaction
+    function playMusic() {
+        bgMusic.play().catch(error => {
+            console.log('Autoplay prevented by browser:', error);
+        });
+    }
+    
+    // Handle song ending - play next song
+    bgMusic.addEventListener('ended', function() {
+        changeSong('next');
+    });
+    
+    // Try to play music on page load
+    window.addEventListener('load', () => {
+        // Update marquee with initial song
+        updateMarqueeWithSong();
+        
+        // Try to play automatically
+        playMusic();
+        
+        // Also play on first user interaction
+        const playOnInteraction = () => {
+            playMusic();
+            document.removeEventListener('click', playOnInteraction);
+            document.removeEventListener('keydown', playOnInteraction);
+            document.removeEventListener('touchstart', playOnInteraction);
+        };
+        
+        document.addEventListener('click', playOnInteraction);
+        document.addEventListener('keydown', playOnInteraction);
+        document.addEventListener('touchstart', playOnInteraction);
+    });
+    
+    // Toggle music on button click
+    toggleMusic.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent this click from triggering the playOnInteraction
+        
+        if (bgMusic.paused) {
+            bgMusic.play();
+            toggleMusic.innerHTML = '🔊';
+            toggleMusic.classList.remove('muted');
+        } else {
+            bgMusic.pause();
+            toggleMusic.innerHTML = '🔇';
+            toggleMusic.classList.add('muted');
+        }
+    });
+    
+    // Previous song button
+    prevSong.addEventListener('click', function(e) {
+        e.stopPropagation();
+        changeSong('prev');
+    });
+    
+    // Next song button
+    nextSong.addEventListener('click', function(e) {
+        e.stopPropagation();
+        changeSong('next');
+    });
+}
+
 // Custom cursor and sparkle effect
 document.addEventListener('DOMContentLoaded', function() {
     // Create custom cursor element
@@ -7,6 +179,16 @@ document.addEventListener('DOMContentLoaded', function() {
     customCursor.className = 'custom-cursor';
     document.body.appendChild(customCursor);
     
+    // Hide default cursor
+    document.body.style.cursor = 'none';
+    
+    // Make all links and buttons show the pointer cursor
+    const clickableElements = document.querySelectorAll('a, button, input[type="submit"], input[type="button"]');
+    clickableElements.forEach(element => {
+        element.style.cursor = 'none';
+    });
+    
+    // Create sparkles container
     const sparklesContainer = document.querySelector('.sparkles-container');
     const maxSparkles = 30; // Increased from 15 to 30 for more sparkles
     const sparkles = [];
@@ -79,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Countdown Timer
+    // Countdown timer
     const countdownDate = new Date('May 22, 2025 00:00:00').getTime();
     
     function updateCountdown() {
@@ -105,30 +287,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update countdown every second
     updateCountdown();
     const countdownInterval = setInterval(updateCountdown, 1000);
-    
-    // Play midi sound on page load (commented out for now)
-    // const audio = new Audio('audio/birthday-midi.mid');
-    // audio.loop = true;
-    // audio.volume = 0.5;
-    // 
-    // const playButton = document.createElement('button');
-    // playButton.textContent = 'Play Music';
-    // playButton.className = 'retro-button';
-    // playButton.style.position = 'fixed';
-    // playButton.style.bottom = '20px';
-    // playButton.style.right = '20px';
-    // playButton.style.zIndex = '1000';
-    // document.body.appendChild(playButton);
-    // 
-    // playButton.addEventListener('click', function() {
-    //     if (audio.paused) {
-    //         audio.play();
-    //         playButton.textContent = 'Pause Music';
-    //     } else {
-    //         audio.pause();
-    //         playButton.textContent = 'Play Music';
-    //     }
-    // });
 });
 
 // Guestbook functionality
@@ -274,4 +432,117 @@ function setupImageHoverEffects() {
             }, 2000); // 2000 milliseconds = 2 seconds
         });
     });
+}
+
+// Initialize all functions when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    setupCountdown();
+    setupSparkles();
+    setupImageHoverEffects();
+    initAudio();
+});
+
+// Function to setup countdown
+function setupCountdown() {
+    const countdownDate = new Date('May 22, 2025 00:00:00').getTime();
+    
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = countdownDate - now;
+        
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        document.getElementById('days').textContent = days.toString().padStart(2, '0');
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        
+        if (distance < 0) {
+            clearInterval(countdownInterval);
+            document.getElementById('countdown-timer').innerHTML = '<h3>The Birthday Trip Has Started!</h3>';
+        }
+    }
+    
+    // Update countdown every second
+    updateCountdown();
+    const countdownInterval = setInterval(updateCountdown, 1000);
+}
+
+// Function to setup sparkles
+function setupSparkles() {
+    const sparklesContainer = document.querySelector('.sparkles-container');
+    const maxSparkles = 30; // Increased from 15 to 30 for more sparkles
+    const sparkles = [];
+    
+    // Cat sparkle GIF URL - only using the one that works
+    const catSparkleUrl = 'https://media.giphy.com/media/l2JJDdD7cv4xdGGis/giphy.gif'; // Glitter cat
+    
+    // Track mouse position
+    let mouseX = 0;
+    let mouseY = 0;
+    
+    document.addEventListener('mousemove', function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        // Update custom cursor position
+        const customCursor = document.querySelector('.custom-cursor');
+        customCursor.style.left = mouseX + 'px';
+        customCursor.style.top = mouseY + 'px';
+        
+        // Add a new sparkle at the cursor position
+        createSparkle(mouseX, mouseY);
+    });
+    
+    // Function to create a sparkle
+    function createSparkle(x, y) {
+        // Increased probability of creating sparkles (from 0.3 to 0.5)
+        if (Math.random() > 0.5) return;
+        
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        
+        // Use the glitter cat GIF
+        sparkle.style.backgroundImage = `url('${catSparkleUrl}')`;
+        
+        // Position slightly behind the cursor with some randomness
+        const offsetX = Math.random() * 20 - 10; // Increased range for more spread
+        const offsetY = Math.random() * 20 - 10;
+        
+        sparkle.style.left = (x - 10 + offsetX) + 'px';
+        sparkle.style.top = (y - 10 + offsetY) + 'px';
+        
+        // Add some random animation
+        const scale = 0.3 + Math.random() * 0.7; // Varied sizes
+        sparkle.style.transform = `scale(${scale})`;
+        sparkle.style.opacity = 0.5 + Math.random() * 0.5;
+        
+        sparklesContainer.appendChild(sparkle);
+        sparkles.push(sparkle);
+        
+        // Remove sparkle after animation
+        setTimeout(() => {
+            sparkle.style.opacity = '0';
+            setTimeout(() => {
+                if (sparkle.parentNode) {
+                    sparkle.parentNode.removeChild(sparkle);
+                }
+                const index = sparkles.indexOf(sparkle);
+                if (index > -1) {
+                    sparkles.splice(index, 1);
+                }
+            }, 300);
+        }, 500 + Math.random() * 500);
+        
+        // Remove excess sparkles
+        if (sparkles.length > maxSparkles) {
+            const oldSparkle = sparkles.shift();
+            if (oldSparkle.parentNode) {
+                oldSparkle.parentNode.removeChild(oldSparkle);
+            }
+        }
+    }
 }
