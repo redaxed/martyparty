@@ -138,6 +138,10 @@ function initAudio() {
     // Handle song ending - play next song
     bgMusic.addEventListener('ended', function() {
         changeSong('next');
+        // Ensure the next song plays automatically
+        bgMusic.play().catch(error => {
+            console.log('Autoplay prevented by browser:', error);
+        });
     });
     
     // Try to play music on page load
