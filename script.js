@@ -3,11 +3,27 @@
 // Function to initialize audio with autoplay
 function initAudio() {
     // Define playlist of songs
-    const playlist = [
+    const allSongs = [
         { src: 'images/birthday-bear1.mp3', title: 'Birthday Bear' },
-        { src: 'images/birthday-bear-edm.mp3', title: 'Birthday Bear EDM' },
-        { src: 'images/birthday-bear-canjun.mp3', title: 'Birthday Bear Cajun' }
+        { src: 'images/birthday-bear-edm.mp3', title: 'BB EDM' },
+        { src: 'images/birthday-bear-canjun.mp3', title: 'BB Cajun' },
+        { src: 'images/birthday-bear-jazz.mp3', title: 'BB Jazz' },
+        { src: 'images/birthday-bear-country.mp3', title: 'BB Country' }
+        { src: 'images/birthday-bear-country.mp3', title: 'BB Rap' }
     ];
+    
+    // Create randomized playlist with first song always the same
+    const playlist = [allSongs[0]];
+    
+    // Fisher-Yates shuffle algorithm for the remaining songs
+    const remainingSongs = allSongs.slice(1);
+    for (let i = remainingSongs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [remainingSongs[i], remainingSongs[j]] = [remainingSongs[j], remainingSongs[i]];
+    }
+    
+    // Add the shuffled songs to the playlist
+    playlist.push(...remainingSongs);
     
     let currentSongIndex = 0;
     
