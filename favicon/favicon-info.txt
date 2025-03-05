@@ -1,0 +1,17 @@
+BIRTHDAY CAKE FAVICON
+
+To add a birthday-themed favicon to the website, download the following files from:
+https://favicon.io/emoji-favicons/birthday-cake/
+
+Required files:
+- android-chrome-192x192.png
+- android-chrome-512x512.png
+- apple-touch-icon.png
+- favicon-16x16.png
+- favicon-32x32.png
+- favicon.ico
+- site.webmanifest
+
+Place all these files in the 'favicon' directory.
+
+The favicon shows a colorful birthday cake with candles, perfect for Lauren's birthday celebration website!
