@@ -8,7 +8,7 @@ function initAudio() {
         { src: 'images/birthday-bear-edm.mp3', title: 'BB EDM' },
         { src: 'images/birthday-bear-canjun.mp3', title: 'BB Cajun' },
         { src: 'images/birthday-bear-jazz.mp3', title: 'BB Jazz' },
-        { src: 'images/birthday-bear-country.mp3', title: 'BB Country' }
+        { src: 'images/birthday-bear-country.mp3', title: 'BB Country' },
         { src: 'images/birthday-bear-country.mp3', title: 'BB Rap' }
     ];
     
