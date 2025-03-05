@@ -467,3 +467,43 @@ footer {
     animation: rotate 3s linear infinite;
     display: inline-block;
 }
+
+.golden-text {
+    color: #FFD700;
+    background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 2px rgba(255, 215, 0, 0.5), 0 0 5px rgba(255, 215, 0, 0.3);
+    animation: sparkle 2s infinite;
+    font-weight: bold;
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+}
+
+.golden-text::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('images/stars-bg.gif') repeat;
+    opacity: 0.5;
+    z-index: -1;
+    border-radius: 5px;
+    animation: shimmer 3s infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { text-shadow: 0 0 4px gold, 0 0 11px gold, 0 0 19px gold; }
+    25% { text-shadow: 0 0 4px #FFF8DC, 0 0 10px #FFF8DC, 0 0 18px #FFF8DC; }
+    50% { text-shadow: 0 0 4px #FFD700, 0 0 14px #FFD700, 0 0 23px #FFD700; }
+    75% { text-shadow: 0 0 4px #DAA520, 0 0 10px #DAA520, 0 0 18px #DAA520; }
+}
+
+@keyframes shimmer {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
+}
